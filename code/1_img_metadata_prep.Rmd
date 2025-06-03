@@ -9,4 +9,41 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r packages}
+library(jsonlite)
+library(tidyverse)
+```
+
 This script preprocesses image metadata files.
+
+```{r data}
+# Load JSON
+
+biden_metadata <- stream_in(file("../data/raw/biden_instagram_zeeschuimer.ndjson"), flatten = TRUE)
+harris_metadata <- stream_in(file("../data/raw/harris_instagram_zeeschuimer.ndjson"), flatten = TRUE)
+trump_metadata <- stream_in(file("../data/raw/trump_instagram_zeeschuimer.ndjson"), flatten = TRUE)
+```
+
+```{r clean}
+# Remove columns with all NAs
+biden_metadata <- biden_metadata %>% select(where(~ !all(is.na(.))))
+harris_metadata <- harris_metadata %>% select(where(~ !all(is.na(.))))
+trump_metadata <- trump_metadata %>% select(where(~ !all(is.na(.))))
+
+# Select relevant columns
+biden_metadata %<>% 
+  select(item_id)
+
+
+
+names(biden_metadata)
+
+
+```
+
+```{r export}
+# Export as csv in data/processed folder
+write.csv(biden_metadata, file = "../data/processed/biden_instagram_metadata.csv", row.names = FALSE)
+write.csv(harris_metadata, file = "../data/processed/harris_instagram_metadata.csv", row.names = FALSE)
+write.csv(trump_metadata, file = "../data/processed/trump_instagram_metadata.csv", row.names = FALSE)
+```
