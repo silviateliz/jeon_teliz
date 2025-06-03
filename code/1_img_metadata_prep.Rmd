@@ -1,0 +1,12 @@
+---
+title: "Image metadata preprocessing"
+author: "Silvia Téliz"
+date: "2025-06-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This script preprocesses image metadata files.
