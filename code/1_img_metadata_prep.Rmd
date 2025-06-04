@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r packages}
 library(jsonlite)
 library(tidyverse)
+library(magrittr)
 ```
 
 This script preprocesses image metadata files.
@@ -25,19 +26,43 @@ trump_metadata <- stream_in(file("../data/raw/trump_instagram_zeeschuimer.ndjson
 ```
 
 ```{r clean}
-# Remove columns with all NAs
-biden_metadata <- biden_metadata %>% select(where(~ !all(is.na(.))))
-harris_metadata <- harris_metadata %>% select(where(~ !all(is.na(.))))
-trump_metadata <- trump_metadata %>% select(where(~ !all(is.na(.))))
 
 # Select relevant columns
 biden_metadata %<>% 
-  select(item_id)
+  select(item_id, source_platform, source_platform_url, id, data.code,
+         data.is_paid_partnership, data.original_height, data.original_width,
+         data.comment_count, data.like_and_view_counts_disabled, data.like_count,
+         data.product_type, data.media_type, data.carousel_media_count, 
+         data.has_audio, data.caption.text, data.user.username, data.user.profile_pic_url,
+         data.user.full_name)
+
+harris_metadata %<>%
+  select(item_id, source_platform, source_platform_url, id, data.code,
+         data.is_paid_partnership, data.original_height, data.original_width,
+         data.comment_count, data.like_and_view_counts_disabled, data.like_count,
+         data.product_type, data.media_type, data.carousel_media_count, 
+         data.has_audio, data.caption.text, data.user.username, data.user.profile_pic_url,
+         data.user.full_name)
 
 
+trump_metadata %<>%
+  select(item_id, source_platform, source_platform_url, id, data.code,
+         data.is_paid_partnership, data.original_height, data.original_width,
+         data.comment_count, data.like_and_view_counts_disabled, data.like_count,
+         data.product_type, data.media_type, data.carousel_media_count, 
+         data.has_audio, data.caption.text, data.user.username, data.user.profile_pic_url,
+         data.user.full_name)
 
-names(biden_metadata)
+# Rename columns
+names <- c("item_id", "source_platform", "source_platform_url", "id", "code",
+         "is_paid_partnership", "original_height", "original_width",
+         "comment_count", "counts_disabled", "like_count",
+         "product_type", "media_type", "carousel_media_count", 
+         "has_audio", "caption_text", "username", "profile_pic_url", "full_name")
 
+biden_metadata %<>% setNames(names)
+harris_metadata %<>% setNames(names)
+trump_metadata %<>% setNames(names)
 
 ```
 
