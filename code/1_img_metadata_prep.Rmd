@@ -1,0 +1,74 @@
+---
+title: "Image metadata preprocessing"
+author: "Silvia Téliz"
+date: "2025-06-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages}
+library(jsonlite)
+library(tidyverse)
+library(magrittr)
+```
+
+This script preprocesses image metadata files.
+
+```{r data}
+# Load JSON
+
+biden_metadata <- stream_in(file("../data/raw/biden_instagram_zeeschuimer.ndjson"), flatten = TRUE)
+harris_metadata <- stream_in(file("../data/raw/harris_instagram_zeeschuimer.ndjson"), flatten = TRUE)
+trump_metadata <- stream_in(file("../data/raw/trump_instagram_zeeschuimer.ndjson"), flatten = TRUE)
+```
+
+```{r clean}
+
+# Select relevant columns
+biden_metadata %<>% 
+  select(item_id, source_platform, source_platform_url, id, data.code,
+         data.is_paid_partnership, data.original_height, data.original_width,
+         data.comment_count, data.like_and_view_counts_disabled, data.like_count,
+         data.product_type, data.media_type, data.carousel_media_count, 
+         data.has_audio, data.caption.text, data.user.username, data.user.profile_pic_url,
+         data.user.full_name)
+
+harris_metadata %<>%
+  select(item_id, source_platform, source_platform_url, id, data.code,
+         data.is_paid_partnership, data.original_height, data.original_width,
+         data.comment_count, data.like_and_view_counts_disabled, data.like_count,
+         data.product_type, data.media_type, data.carousel_media_count, 
+         data.has_audio, data.caption.text, data.user.username, data.user.profile_pic_url,
+         data.user.full_name)
+
+
+trump_metadata %<>%
+  select(item_id, source_platform, source_platform_url, id, data.code,
+         data.is_paid_partnership, data.original_height, data.original_width,
+         data.comment_count, data.like_and_view_counts_disabled, data.like_count,
+         data.product_type, data.media_type, data.carousel_media_count, 
+         data.has_audio, data.caption.text, data.user.username, data.user.profile_pic_url,
+         data.user.full_name)
+
+# Rename columns
+names <- c("item_id", "source_platform", "source_platform_url", "id", "code",
+         "is_paid_partnership", "original_height", "original_width",
+         "comment_count", "counts_disabled", "like_count",
+         "product_type", "media_type", "carousel_media_count", 
+         "has_audio", "caption_text", "username", "profile_pic_url", "full_name")
+
+biden_metadata %<>% setNames(names)
+harris_metadata %<>% setNames(names)
+trump_metadata %<>% setNames(names)
+
+```
+
+```{r export}
+# Export as csv in data/processed folder
+write.csv(biden_metadata, file = "../data/processed/biden_instagram_metadata.csv", row.names = FALSE)
+write.csv(harris_metadata, file = "../data/processed/harris_instagram_metadata.csv", row.names = FALSE)
+write.csv(trump_metadata, file = "../data/processed/trump_instagram_metadata.csv", row.names = FALSE)
+```
